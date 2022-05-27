@@ -66,9 +66,13 @@ int main()
     
     sceneRoot.children.push_back(&duckieNode);
 
-    Mesh cube = loadObjFile("../models/cube.obj");
-    scene::MeshNode cubeNode(cube, duckieProgram);
-    duckieNode.children.push_back(&cubeNode);
+    Mesh hat = loadObjFile("../models/top_hat.obj");
+    scene::MeshNode hatNode(hat, duckieProgram);
+    mat4 hatMat = mat4(1.0);
+    hatMat = scale(hatMat, vec3(0.8));
+    hatMat = translate(hatMat, vec3(0.0, 3.3, 0.0));
+    hatNode.localTransform = hatMat;
+    duckieNode.children.push_back(&hatNode);
 
 
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -87,11 +91,6 @@ int main()
         modelMat = translate(modelMat, vec3(0.0, -0.5, -10.0));
         modelMat = rotate(modelMat, radians((float)(10 * glfwGetTime())), vec3(0.5f, 1.0f, 0.0f));
         duckieNode.localTransform = modelMat;
-
-        mat4 cubeNodeMat = mat4(1.0);
-        cubeNodeMat = translate(cubeNodeMat, vec3(0.0, 2.0 + sin(10.0f*glfwGetTime()), 0.0));
-        cubeNodeMat = rotate(cubeNodeMat, radians((float)(30 * glfwGetTime())), vec3(1.0f, 0.0f, 0.0f));
-        cubeNode.localTransform = cubeNodeMat;
 
         sceneRoot.render(mat4(1.0));
 
