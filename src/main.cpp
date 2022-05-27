@@ -94,13 +94,6 @@ int main()
 
         sceneRoot.render(mat4(1.0));
 
-        // mat3 normalMat = transpose(inverse(mat3(modelMat)));
-        // GLuint normalMatU = glGetUniformLocation(duckieProgram, "normalMat");
-        // glUniformMatrix3fv(normalMatU, 1, GL_FALSE, value_ptr(normalMat));
-
-        // duckie.draw();
-        // // triangle.draw(duckieProgram);
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
