@@ -19,6 +19,7 @@ add_executable(app
     src/meshUtil.cpp
     src/shaderUtil.cpp
     src/sceneGraph.cpp
+    src/light.cpp
 )
 
 set(LIBS 

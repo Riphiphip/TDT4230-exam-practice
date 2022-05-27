@@ -5,6 +5,17 @@ layout(location = 1) in vec2 uv_in;
 
 out vec4 color;
 
+struct PointLight {
+  float intensity;
+  vec3 color;
+  vec3 position;
+};
+
+layout (std140, binding = 1) uniform PointLights {
+  uint pointLightCount;
+  PointLight pointLights[100];
+};
+
 void main(){
     vec3 normal = normal_in; 
     float shadowCoef = max(dot(normal, vec3(0.5, 1.0, 0.5)), 0.3);

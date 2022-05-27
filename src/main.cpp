@@ -12,6 +12,7 @@
 #include "meshUtil.hpp"
 #include "shaderUtil.hpp"
 #include "sceneGraph.hpp"
+#include "light.hpp"
 
 using namespace glm;
 
@@ -83,6 +84,23 @@ int main()
     hatNode.localTransform = hatMat;
     duckieNode.children.push_back(&hatNode);
 
+    PointLightSet pointLights;
+
+    PointLight light1;
+    light1.color = vec3(1.0);
+    light1.intensity = 10.0;
+    light1.position = vec3(1.0, 1.0, 0.0);
+
+    pointLights.addLight(light1);
+
+    PointLight light2;
+    light2.color = vec3(1.0, 0.0, 0.0);
+    light2.intensity = 10.0;
+    light2.position = vec3(1.0, 1.0, 1.0);
+
+    pointLights.addLight(light2);
+
+
     GLsizeiptr camMatBufSize = 2 * sizeof(mat4);
     GLuint camMatBlockBinding = 0;
     GLuint camMatBufID;
@@ -95,7 +113,7 @@ int main()
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     do
     {
-        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearColor(0.5, 0.5, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glBindBuffer(GL_UNIFORM_BUFFER, camMatBufID);
@@ -112,6 +130,8 @@ int main()
         modelMat = translate(modelMat, vec3(0.0, -0.5, -10.0));
         modelMat = rotate(modelMat, radians((float)(10 * glfwGetTime())), vec3(0.5f, 1.0f, 0.0f));
         duckieNode.localTransform = modelMat;
+
+        pointLights.update();
 
         sceneRoot.render(mat4(1.0));
 
