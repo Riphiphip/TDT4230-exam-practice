@@ -74,6 +74,14 @@ int main()
     hatNode.localTransform = hatMat;
     duckieNode.children.push_back(&hatNode);
 
+    GLsizeiptr camMatBufSize = 2 * sizeof(mat4);
+    GLuint camMatBlockBinding = 0;
+    GLuint camMatBufID;
+    glGenBuffers(1, &camMatBufID);
+    glBindBuffer(GL_UNIFORM_BUFFER, camMatBufID);
+    glBufferData(GL_UNIFORM_BUFFER, camMatBufSize, nullptr, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0); 
+    glBindBufferRange(GL_UNIFORM_BUFFER, camMatBlockBinding, camMatBufID, 0, camMatBufSize);
 
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     do
@@ -81,11 +89,15 @@ int main()
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(duckieProgram);
-        fmat4 projectionMat = perspective(radians(45.0f), 1.0f, 0.1f, 100.0f);
+        glBindBuffer(GL_UNIFORM_BUFFER, camMatBufID);
 
-        GLuint projectionU = glGetUniformLocation(duckieProgram, "projection");
-        glUniformMatrix4fv(projectionU, 1, GL_FALSE, value_ptr(projectionMat));
+        mat4 projectionMat = perspective(radians(45.0f), 1.0f, 0.1f, 100.0f);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projectionMat));
+
+        mat4 viewMat = mat4(1.0);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(viewMat));
+
+        glUseProgram(duckieProgram);
 
         mat4 modelMat = scale(mat4(1.0), vec3(1.0));
         modelMat = translate(modelMat, vec3(0.0, -0.5, -10.0));
