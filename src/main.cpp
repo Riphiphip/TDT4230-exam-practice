@@ -89,14 +89,14 @@ int main()
     PointLight light1;
     light1.color = vec3(1.0);
     light1.intensity = 10.0;
-    light1.position = vec3(1.0, 1.0, 0.0);
+    light1.position = vec3(-5.0, -10.0, 10.0);
 
     pointLights.addLight(light1);
 
     PointLight light2;
     light2.color = vec3(1.0, 0.0, 0.0);
     light2.intensity = 10.0;
-    light2.position = vec3(1.0, 1.0, 1.0);
+    light2.position = vec3(10.0, 10.0, 10.0);
 
     pointLights.addLight(light2);
 
