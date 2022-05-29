@@ -184,6 +184,7 @@ int main()
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     do
     {
+        // Render TV shows
         glBindFramebuffer(GL_FRAMEBUFFER, tvScreenFrameBuffer);
         glViewport(0, 0, 500, 500);
         glBindTexture(GL_TEXTURE_2D, tvScreenTexture);
@@ -210,6 +211,7 @@ int main()
 
         tvShowRoot.render(mat4(1.0));
 
+        // Render main scene 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         glViewport(0, 0, windowWidth, windowHeight);
