@@ -169,6 +169,25 @@ int main()
 
     duckieNode.children.push_back(&hatNode);
 
+    vector<ShaderPath> duckieNormalsProgramShaders{
+        {
+            .path = "../shaders/default.vert",
+            .type = VERTEX,
+        },
+        {
+            .path = "../shaders/showNormals.geo",
+            .type = GEOMETRY,
+        },
+        {
+            .path = "../shaders/normals.frag",
+            .type = FRAGMENT,
+        },
+    };
+    GLuint duckieNormalsProgram = createProgram(duckieNormalsProgramShaders);
+    scene::MeshNode duckieNormalsNode(duckieMesh,  duckieNormalsProgram);
+
+    duckieNode.children.push_back(&duckieNormalsNode);
+
     PointLightSet tvShowPointLights;
 
     PointLight light2;
