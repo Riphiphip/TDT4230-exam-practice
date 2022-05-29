@@ -98,21 +98,27 @@ int main()
     };
     GLuint tvScreenProgram = createProgram(tvScreenShaders);
     Mesh tvScreenMesh = loadObjFile("../models/TV_screen.obj");
-    GLuint tvScreenTexture;
-    glGenTextures(1, &tvScreenTexture);
-    tvScreenMesh.textures.push_back({.id = tvScreenTexture, .type = "Framebuffer texture"});
 
-    GLuint tvScreenRenderBuffer;
-    glGenRenderbuffers(1, &tvScreenRenderBuffer);
-
+    GLuint tvScreenWidth = 1000;
+    GLuint tvScreenHeight = 1000;
     GLuint tvScreenFrameBuffer;
     glGenFramebuffers(1, &tvScreenFrameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, tvScreenFrameBuffer);
+
+    GLuint tvScreenTexture;
+    glGenTextures(1, &tvScreenTexture);
+    tvScreenMesh.textures.push_back({.id = tvScreenTexture, .type = "Framebuffer texture"});
     glBindTexture(GL_TEXTURE_2D, tvScreenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tvScreenWidth, tvScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tvScreenTexture, 0);
+    
+    GLuint tvScreenRenderBuffer;
+    glGenRenderbuffers(1, &tvScreenRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, tvScreenRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, tvScreenWidth, tvScreenHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, tvScreenRenderBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     scene::MeshNode tvScreenNode(tvScreenMesh, tvScreenProgram);
     tvBodyNode.children.push_back(&tvScreenNode);
@@ -186,18 +192,7 @@ int main()
     {
         // Render TV shows
         glBindFramebuffer(GL_FRAMEBUFFER, tvScreenFrameBuffer);
-        glViewport(0, 0, 500, 500);
-        glBindTexture(GL_TEXTURE_2D, tvScreenTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 500, 500, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glBindRenderbuffer(GL_RENDERBUFFER, tvScreenRenderBuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 500, 500);
-
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
+        glViewport(0, 0, tvScreenWidth, tvScreenHeight);
         glClearColor(1.0, 0.5, 0.5, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -223,10 +218,7 @@ int main()
         mat4 projectionMat = perspective(radians(45.0f), float(windowHeight) / windowWidth, 0.1f, 100.0f);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projectionMat));
 
-        float orbitRadius = 5.0;
-        float time = glfwGetTime();
-        vec3 camPos = vec3(orbitRadius * sin(time), 1.0, orbitRadius * cos(time));
-        mat4 viewMat = lookAt(camPos, vec3(0.0), vec3(0.0, 1.0, 0.0));
+        mat4 viewMat = lookAt(vec3(0.0, 0.0, 2.0), vec3(0.0), vec3(0.0, 1.0, 0.0));
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(viewMat));
 
         pointLights.update();
