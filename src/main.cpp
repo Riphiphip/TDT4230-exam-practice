@@ -68,7 +68,7 @@ int main()
             .type = VERTEX,
         },
         {
-            .path = "../shaders/showNormals.geo",
+            .path = "../shaders/showNormals.geom",
             .type = GEOMETRY,
         },
         {
