@@ -14,7 +14,7 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 void Mesh::draw() const
 {
     glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, indices.size());
+    glDrawArrays(drawType, 0, indices.size());
 }
 
 void Mesh::setupMesh()
