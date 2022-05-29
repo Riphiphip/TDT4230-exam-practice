@@ -142,7 +142,7 @@ int main()
     GLuint duckieProgram = createProgram(duckieShaders);
     Mesh duckieMesh = loadObjFile("../models/duckie.obj");
     scene::MeshNode duckieNode(duckieMesh, duckieProgram);
-    duckieNode.localTransform = translate(mat4(1.0), vec3(0.0, -0.5, -10.0));
+    duckieNode.localTransform = translate(mat4(1.0), vec3(0.0, -1.5, -10.0));
 
     tvShowRoot.children.push_back(&duckieNode);
 
@@ -164,7 +164,13 @@ int main()
     duckieNode.children.push_back(&hatNode);
 
     PointLightSet tvShowPointLights;
-    tvShowPointLights.addLight(light1);
+
+    PointLight light2;
+    light2.color = vec3(1.0);
+    light2.intensity = 10.0;
+    light2.position = vec3(20.0, 10.0, 10.0);
+
+    tvShowPointLights.addLight(light2);
 
     GLsizeiptr camMatBufSize = 2 * sizeof(mat4);
     GLuint camMatBlockBinding = 0;
@@ -179,6 +185,7 @@ int main()
     do
     {
         glBindFramebuffer(GL_FRAMEBUFFER, tvScreenFrameBuffer);
+        glViewport(0, 0, 500, 500);
         glBindTexture(GL_TEXTURE_2D, tvScreenTexture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 500, 500, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -204,6 +211,8 @@ int main()
         tvShowRoot.render(mat4(1.0));
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, windowWidth, windowHeight);
         glClearColor(0.5, 0.5, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
