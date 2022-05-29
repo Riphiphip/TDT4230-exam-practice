@@ -18,7 +18,7 @@ struct Vertex
 
 struct Texture
 {
-    unsigned int id;
+    GLuint id;
     string type;
 };
 

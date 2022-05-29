@@ -28,6 +28,7 @@ namespace scene
         GLuint programID;
         std::string modelMatUniformName = "model";
         std::string normalMatUniformName = "normalMat";
+        std::string textureListUniformName = "textures";
 
         MeshNode(Mesh mesh, GLuint programID) : mesh{mesh}, programID{programID}
         {

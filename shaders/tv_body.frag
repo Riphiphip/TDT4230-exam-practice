@@ -25,9 +25,9 @@ void main(){
   vec3 normal = normalize(normal_in);
 
   float diffuseCoef = 0.001;
-  vec3 diffuseCol = normal;
+  vec3 diffuseCol = vec3(0.1);
 
-  vec3 diffuse = vec3(0.0);
+  vec3 diffuse = vec3(0.2);
 
   for (int i = 0; i < pointLightCount; ++i){
     PointLight light = pointLights[i];
