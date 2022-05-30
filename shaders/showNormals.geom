@@ -5,12 +5,17 @@ layout(line_strip, max_vertices=6) out;
 
 layout(location = 0) in vec3 normals_in[];
 
-float magnitude = 1.0;
+layout (std140, binding = 0) uniform CameraMatrices {
+  mat4 projection;
+  mat4 view;
+};
+
+float magnitude = 0.5;
 
 void generateLine(uint vertex) {
-    gl_Position = gl_in[vertex].gl_Position;
+    gl_Position = projection * view * gl_in[vertex].gl_Position;
     EmitVertex();
-    gl_Position = (gl_in[vertex].gl_Position + vec4(normalize(normals_in[vertex]), 0.0) * magnitude);
+    gl_Position = projection * view * (gl_in[vertex].gl_Position + vec4(normalize(normals_in[vertex]), 0.0) * magnitude);
     EmitVertex();
     EndPrimitive();
 }

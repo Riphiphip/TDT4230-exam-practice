@@ -62,10 +62,11 @@ int main()
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DITHER);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
     vector<ShaderPath> normalsProgramShaders{
         {
-            .path = "../shaders/default.vert",
+            .path = "../shaders/no_camera.vert",
             .type = VERTEX,
         },
         {
@@ -78,6 +79,22 @@ int main()
         },
     };
     GLuint normalsProgram = createProgram(normalsProgramShaders);
+
+    vector<ShaderPath> grassShaders{
+        {
+            .path = "../shaders/no_camera.vert",
+            .type = VERTEX,
+        },
+        {
+            .path = "../shaders/grassify.geom",
+            .type = GEOMETRY,
+        },
+        {
+            .path = "../shaders/grass.frag",
+            .type = FRAGMENT,
+        },
+    };
+    GLuint grassProgram = createProgram(grassShaders);
 
     // Actual scene
     scene::Node sceneRoot;
