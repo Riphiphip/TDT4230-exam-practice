@@ -13,6 +13,7 @@
 #include "shaderUtil.hpp"
 #include "sceneGraph.hpp"
 #include "light.hpp"
+#include "bezier.hpp"
 
 using namespace glm;
 
@@ -129,7 +130,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tvScreenTexture, 0);
-    
+
     GLuint tvScreenRenderBuffer;
     glGenRenderbuffers(1, &tvScreenRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, tvScreenRenderBuffer);
@@ -188,6 +189,46 @@ int main()
     scene::MeshNode duckieNormalsNode(duckieMesh, normalsProgram);
     duckieNode.children.push_back(&duckieNormalsNode);
 
+    vector<ShaderPath> bezierShaders{
+        {
+            .path = "../shaders/default.vert",
+            .type = VERTEX,
+        },
+        {
+            .path = "../shaders/normals.frag",
+            .type = FRAGMENT,
+        },
+    };
+    GLuint bezierProgram = createProgram(bezierShaders);
+
+    vector<Vertex> controlPoints{
+        {
+            .position = vec3(2.0, 2.0, 0.0),
+            .normal = vec3(0.0),
+            .textureCoords = vec2(-1.0, -1.0),
+        },
+        {
+            .position = vec3(0.0, -2.0, 0.0),
+            .normal = vec3(0.0),
+            .textureCoords = vec2(0.0, 1.0),
+        },
+        {
+            .position = vec3(-2.0, 2.0, 0.0),
+            .normal = vec3(0.0),
+            .textureCoords = vec2(1.0, -1.0),
+        },
+        {
+            .position = vec3(-1.0, 3.0, 0.0),
+            .normal = vec3(0.0),
+            .textureCoords = vec2(1.0, -1.0),
+        },
+    };
+
+    Mesh bezierMesh = createBezierMesh(controlPoints, 100);
+    scene::MeshNode bezierNode(bezierMesh, bezierProgram);
+
+    hatNode.children.push_back(&bezierNode);
+
     PointLightSet tvShowPointLights;
 
     PointLight light2;
@@ -225,7 +266,7 @@ int main()
 
         tvShowRoot.render(mat4(1.0));
 
-        // Render main scene 
+        // Render main scene
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         glViewport(0, 0, windowWidth, windowHeight);
@@ -237,8 +278,10 @@ int main()
         mat4 projectionMat = perspective(radians(45.0f), float(windowHeight) / windowWidth, 0.1f, 100.0f);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), value_ptr(projectionMat));
 
-        mat4 viewMat = lookAt(vec3(0.0, 0.0, 2.0), vec3(0.0), vec3(0.0, 1.0, 0.0));
+        mat4 viewMat = lookAt(vec3(0.0, 0.0, 6.0), vec3(0.0), vec3(0.0, 1.0, 0.0));
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), value_ptr(viewMat));
+
+        bezierNode.localTransform = rotate(mat4(1.0), float(glfwGetTime()), vec3(0.0, 1.0, 0.0));
 
         pointLights.update();
 

@@ -20,6 +20,7 @@ add_executable(app
     src/shaderUtil.cpp
     src/sceneGraph.cpp
     src/light.cpp
+    src/bezier.cpp
 )
 
 set(LIBS 

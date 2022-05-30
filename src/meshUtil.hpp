@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
+#include <GL/glew.h>
 
 #include "../lib/OBJ_Loader.hpp"
 
