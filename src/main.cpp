@@ -218,7 +218,7 @@ int main()
             .textureCoords = vec2(1.0, -1.0),
         },
         {
-            .position = vec3(-1.0, 3.0, 0.0),
+            .position = vec3(-1.0, 3.0, 1.0),
             .normal = vec3(0.0),
             .textureCoords = vec2(1.0, -1.0),
         },
